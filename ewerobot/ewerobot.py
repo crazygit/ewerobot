@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """Main module."""
+from __future__ import absolute_import
+
 import time
 from functools import wraps
 
@@ -35,9 +37,10 @@ class EClient(Client):
     SNSAPI_BASE_SCOPE = 'snsapi_base'
     SNSAPI_USERINFO_SCOPE = 'snsapi_userinfo'
 
-    def __init__(self, config=None):
+    def __init__(self, config=None, timeout=10):
         if config:
             self.init_app(config)
+        self.timeout = timeout
 
     def init_app(self, config):
         self.config = config
@@ -96,7 +99,7 @@ class EClient(Client):
         r = requests.request(
             method=method,
             url=url,
-            timeout=5,
+            timeout=self.timeout,
             **kwargs
         )
         r.raise_for_status()
@@ -328,7 +331,5 @@ class EClient(Client):
                 },
                 'msgtype': 'text',
                 'clientmsgid': int(time.time() * 1000)
-
             },
-            timeout=10,
         )
